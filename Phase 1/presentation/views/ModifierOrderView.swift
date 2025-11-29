@@ -7,12 +7,16 @@
 
 import SwiftUI
 
-struct ModifierOrderView: View {
+// TODO: Add this to show modifier order matters
+struct ModifierOrderDemo: View {
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 40) {
+            // Example showing padding→background
             Text("Padding First")
                 .padding()
                 .background(Color.blue)
+            
+            // Example showing background→padding
             Text("Background First")
                 .background(Color.blue)
                 .padding()
@@ -21,5 +25,5 @@ struct ModifierOrderView: View {
 }
 
 #Preview {
-    ModifierOrderView()
+    ModifierOrderDemo()
 }
