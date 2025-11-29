@@ -26,7 +26,6 @@ struct CardView: View {
             Image(systemName: imageName)
                 .font(.largeTitle)
                 .foregroundStyle(Color.cyan)
-                .shadow(radius: 7, x: 2, y: 5)
             VStack(alignment: .leading) {
                 Text(title)
                     .font(.headline)
@@ -38,8 +37,11 @@ struct CardView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Color.gray.opacity(0.2))
-        .cornerRadius(10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.gray.opacity(0.1))
+                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+        )
     }
 }
 
@@ -47,11 +49,11 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                CardView(imageName: "tree.fill", title: "Tree", description: "A simple tree card")
-                CardView(imageName: "cloud.sleet.fill", title: "Tree", description: "A simple tree card")
-                CardView(imageName: "sun.dust.fill", title: "Tree", description: "A simple tree card")
-                CardView(imageName: "moon.dust.fill", title: "Tree", description: "A simple tree card")
-                CardView(imageName: "carbon.dioxide.cloud.fill", title: "Tree", description: "A simple tree card")
+                CardView(imageName: "tree.fill", title: "Tree", description: "Nature's air purifier")
+                CardView(imageName: "cloud.sleet.fill", title: "Sleet", description: "Winter precipitation")
+                CardView(imageName: "sun.dust.fill", title: "Dusty Sun", description: "Hazy weather conditions")
+                CardView(imageName: "moon.dust.fill", title: "Dusty Moon", description: "Lunar surface features")
+                CardView(imageName: "carbon.dioxide.cloud.fill", title: "CO2", description: "Greenhouse gas indicator")
             }
             .padding()
         }
