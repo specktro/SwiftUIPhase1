@@ -43,7 +43,7 @@ struct CardView: View {
     }
 }
 
-struct CardsView: View {
+struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -59,5 +59,5 @@ struct CardsView: View {
 }
 
 #Preview {
-    CardsView()
+    ContentView()
 }
