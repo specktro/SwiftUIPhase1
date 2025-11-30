@@ -11,7 +11,10 @@ import SwiftUI
 struct Phase_1App: App {
     var body: some Scene {
         WindowGroup {
-            ToDoListView()
+            NavigationStack {
+                ToDoListView()
+                    .navigationTitle("My Todos")
+            }
         }
     }
 }
