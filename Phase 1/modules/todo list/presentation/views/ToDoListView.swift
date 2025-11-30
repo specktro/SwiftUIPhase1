@@ -14,7 +14,9 @@ struct ToDoListView: View {
     var body: some View {
         List {
             Section {
-                AddTodoField(newTodo: $newTodo)
+                AddTodoField(newTodo: $newTodo) { newTodo in
+                    todos.append(newTodo)
+                }
             }
             
             Section {

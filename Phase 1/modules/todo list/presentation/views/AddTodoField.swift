@@ -10,12 +10,14 @@ import SwiftUI
 
 struct AddTodoField: View {
     @Binding var newTodo: String
+    var addTodo: (Todo) -> Void
     
     var body: some View {
         HStack {
             TextField("New todo...", text: $newTodo)
             Button {
-                // TODO: Action to add a new item into the todo list
+                addTodo(Todo(title: newTodo, isCompleted: false))
+                newTodo = ""
             } label: {
                 Image(systemName: "plus")
             }
