@@ -17,10 +17,11 @@ struct TodoCard: View {
             } label: {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(todo.isCompleted ? .green : .gray)
+                    .font(.title2)
             }
             Text(todo.title)
-                .foregroundStyle(todo.isCompleted ? .gray : .black)
                 .strikethrough(todo.isCompleted)
+                .foregroundStyle(todo.isCompleted ? .secondary : .primary)
         }
     }
 }
