@@ -14,29 +14,43 @@ extension HTMLElement {
 // MARK: - Basic HTML Tag
 struct HTMLTag: HTMLElement {
     let tagName: String
+    let attributes: [String: String]
     let content: HTMLElement?
-    
-    init(_ tagName: String, content: HTMLElement? = nil) {
+
+    init(_ tagName: String, attributes: [String: String] = [:], content: HTMLElement? = nil) {
         self.tagName = tagName
+        self.attributes = attributes
         self.content = content
     }
-    
+
     func render(indent: Int) -> String {
         let spaces = String(repeating: "  ", count: indent)
-        
+        let attributeString = renderAttributes()
+
         if let content = content {
             if let textContent = content as? HTMLText {
-                return "\(spaces)<\(tagName)>\(textContent.text)</\(tagName)>"
+                return "\(spaces)<\(tagName)\(attributeString)>\(textContent.text)</\(tagName)>"
             }
-            
+
             return """
-            \(spaces)<\(tagName)>
+            \(spaces)<\(tagName)\(attributeString)>
             \(content.render(indent: indent + 1))
             \(spaces)</\(tagName)>
             """
         } else {
-            return "\(spaces)<\(tagName)></\(tagName)>"
+            return "\(spaces)<\(tagName)\(attributeString)></\(tagName)>"
         }
+    }
+
+    private func renderAttributes() -> String {
+        guard !attributes.isEmpty else { return "" }
+
+        let sortedAttributes = attributes.sorted { $0.key < $1.key }
+        let attributePairs = sortedAttributes.map { key, value in
+            "\(key)=\"\(value)\""
+        }
+
+        return " " + attributePairs.joined(separator: " ")
     }
 }
 
@@ -89,52 +103,61 @@ struct HTMLBuilder {
 }
 
 // MARK: - Convenience Functions
-
-func html(@HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
-    HTMLTag("html", content: content())
+func html(_ attributes: [String: String] = [:], @HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
+    HTMLTag("html", attributes: attributes, content: content())
 }
 
-func head(@HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
-    HTMLTag("head", content: content())
+func head(_ attributes: [String: String] = [:], @HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
+    HTMLTag("head", attributes: attributes, content: content())
 }
 
-func body(@HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
-    HTMLTag("body", content: content())
+func body(_ attributes: [String: String] = [:], @HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
+    HTMLTag("body", attributes: attributes, content: content())
 }
 
-func div(@HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
-    HTMLTag("div", content: content())
+// Overloaded div functions for different syntaxes
+func div(_ attributes: [String: String] = [:], @HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
+    HTMLTag("div", attributes: attributes, content: content())
 }
 
-func h1(_ text: String) -> HTMLElement {
-    HTMLTag("h1", content: HTMLText(text: text))
+func div(class className: String? = nil, id: String? = nil, @HTMLBuilder content: () -> HTMLElement) -> HTMLElement {
+    var attributes: [String: String] = [:]
+    if let className = className {
+        attributes["class"] = className
+    }
+    if let id = id {
+        attributes["id"] = id
+    }
+    return HTMLTag("div", attributes: attributes, content: content())
 }
 
-func h2(_ text: String) -> HTMLElement {
-    HTMLTag("h2", content: HTMLText(text: text))
+func h1(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("h1", attributes: attributes, content: HTMLText(text: text))
 }
 
-func h3(_ text: String) -> HTMLElement {
-    HTMLTag("h3", content: HTMLText(text: text))
+func h2(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("h2", attributes: attributes, content: HTMLText(text: text))
 }
 
-func p(_ text: String) -> HTMLElement {
-    HTMLTag("p", content: HTMLText(text: text))
+func h3(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("h3", attributes: attributes, content: HTMLText(text: text))
 }
 
-func li(_ text: String) -> HTMLElement {
-    HTMLTag("li", content: HTMLText(text: text))
+func p(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("p", attributes: attributes, content: HTMLText(text: text))
 }
 
-func ul(_ text: String) -> HTMLElement {
-    HTMLTag("ul", content: HTMLText(text: text))
+func li(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("li", attributes: attributes, content: HTMLText(text: text))
 }
 
-func title(_ text: String) -> HTMLElement {
-    HTMLTag("title", content: HTMLText(text: text))
+func ul(_ attributes: [String: String] = [:], _ text: String) -> HTMLElement {
+    HTMLTag("ul", attributes: attributes, content: HTMLText(text: text))
 }
 
-// TODO: Add more tag functions (h2, h3, ul, etc.)
+func title(_ text: String, attributes: [String: String] = [:]) -> HTMLElement {
+    HTMLTag("title", attributes: attributes, content: HTMLText(text: text))
+}
 
 // MARK: - Test Cases
 func runTests() {
@@ -211,6 +234,31 @@ func runTests() {
     }
     print("Test 5 (Full Page):")
     print(test5.render())
+    print()
+
+    // Test 6: Attributes with named parameters
+    let test6 = html {
+        body {
+            div(class: "container", id: "main") {
+                h1("Welcome", attributes: ["class": "title"])
+                p("Content with attributes", attributes: ["id": "intro", "class": "text"])
+            }
+        }
+    }
+    print("Test 6 (Attributes with Named Parameters):")
+    print(test6.render())
+    print()
+
+    // Test 7: Attributes with dictionary syntax
+    let test7 = html {
+        body(["class": "body-class"]) {
+            div(["class": "wrapper", "data-id": "123"]) {
+                p("Paragraph with data attributes", attributes: ["data-name": "test"])
+            }
+        }
+    }
+    print("Test 7 (Attributes with Dictionary Syntax):")
+    print(test7.render())
 }
 
 // Run tests
