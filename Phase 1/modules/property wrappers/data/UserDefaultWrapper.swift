@@ -17,7 +17,8 @@ struct UserDefault<T>: DynamicProperty {
     init(_ key: String, defaultValue: T) {
         self.key = key
         self.defaultValue = defaultValue
-        self.value = UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+        let storedValue = UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
+        _value = State(initialValue: storedValue)
         
     }
     
