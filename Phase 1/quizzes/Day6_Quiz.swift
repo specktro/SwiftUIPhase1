@@ -35,7 +35,7 @@
 //
 
 // Question 5: Implement a type-safe LoadingState enum
-enum LoadingState<T> {
+enum LoadingStateSample<T> {
     // Your implementation
     // Should support: idle, loading, success(T), failure(Error)
     case idle
@@ -45,7 +45,7 @@ enum LoadingState<T> {
 }
 
 // Usage example:
-//var state: LoadingState<[String]> = .idle
+//var state: LoadingStateSample<[String]> = .idle
 
 // Test state transitions:
 //state = .loading
